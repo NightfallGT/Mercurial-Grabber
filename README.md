@@ -20,4 +20,5 @@
 
 
 ### Educational Purposes Only
-
+This tool demonstrates and makes it easy to create your own grabber. This shows what type of information attackers can grab from a victim's pc. 
+Only use this on your own pc and do not use it on other people maliciously. 
