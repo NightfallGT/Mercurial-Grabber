@@ -7,7 +7,7 @@ using System.CodeDom.Compiler;
 
 namespace Mercurial
 {
-    public partial class Form1 : Form
+    public partial class Form : Form
     {
         int rgbFlag = 0;
         public Form1()
