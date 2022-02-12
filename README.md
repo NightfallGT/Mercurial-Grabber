@@ -12,7 +12,7 @@
 - Grabs Windows product key
 - Grabs IP address, geolocation
 - Grabs screenshot
-- Anti Virutal Machine
+- Anti Virtual Machine
 - Anti Debug
 
 ## Customization
